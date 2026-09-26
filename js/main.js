@@ -1,0 +1,74 @@
+// ========================
+// File: js/main.js
+// Vintage Barbershop Project
+//=========================
+// -----DOM Elements ----
+const yearEl = document.getElementById("year");
+const menuBtn = document.getElementById("menuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+const ctaBtn = document.getElementById("ctaBtn");
+const callBtn = document.getElementById("callBtn");
+const phoneLink = document.getElementById("phoneLink");
+const heading = document.getElementById("heroHeading");
+// --- Helpers / Functions ----- //
+// update footer year automatically
+const setCurrentYear = () => {
+  //will update year in footer
+  const now = new Date(); // pre-built constructor that pulls real-time date info.
+  yearEl.textContent = now.getFullYear(); // changing the text content of the span element to get the new date info specifically the year
+};
+//Toggel mobile menu open/close
+let isMenuOpen = false; // this variable keeps track wether the mobile menu is open or closed
+const toggleMobileMenu = () => {
+  if (!mobileMenu) return;
+  if (isMenuOpen === false) {
+    // check out tracker variable to see if the menu is currently closed
+    mobileMenu.classList.add("is-open"); // add the CSS class that makes the menu visable
+    isMenuOpen = true; //ipdate our tracker so we know the menu is open
+  } else {
+    mobileMenu.classList.remove("is-open"); // remove the CSS class so the menu becomes hidden again
+    isMenuOpen = false;
+  }
+}; // Close mobile menu (used when a link is clicked)
+const closeMobileMenu = () => {
+  if (!mobileMenu) return;
+  mobileMenu.classList.remove("is-open");
+  isMenuOpen = false;
+};
+const updateHeadingText = (newText) => {
+  if (!heading) return;
+  heading.textContent = newText;
+};
+//-----Event Listeners ------
+// 1) set year on page load
+setCurrentYear();
+// 2) hamburger menu toggle
+if (menuBtn) {
+  menuBtn.addEventListener("click", () => {
+    toggleMobileMenu();
+  });
+}
+// 3) close mobile menu when a mobile link is clicked (event delegation)
+if (mobileMenu) {
+  mobileMenu.addEventListener("click", (event) => {
+    if (event.target.tagName === "A") {
+      closeMobileMenu();
+    }
+  });
+}
+// 4) CTA Button: "Book Now" (placeholder behavior)
+if (ctaBtn) {
+  ctaBtn.addEventListener("click", () => {
+    updateHeadingText("booking coming next - great choice!");
+  });
+}
+// 5) Call Button: try to use the phone number in the footer
+if (callBtn) {
+  callBtn.addEventListener("click", () => {
+    if (phoneLink) {
+      updateHeadingText("Call us at " + phoneLink.textContent);
+    } else {
+      updateHeadingText("Call feature coming next!");
+    }
+  });
+}
