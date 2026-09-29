@@ -51,6 +51,21 @@ body {
   padding: 14px 0;
   gap: 16px;
 }
+/* --- Sticky Navbar Visual Change (on scroll) ---- */
+.site-header {
+  transition:
+    padding 0.2s ease,
+    border-radius 0.2s ease,
+    width 0.2s ease,
+    margin 0.2s ease;
+}
+/* When Scrolled, we "float" the header with rounded corners */
+.site-header.is-scrolled {
+  width: calc(100% - 24px);
+  margin: 12px auto 0 auto;
+  border-radius: 18px;
+  padding: 2px 0;
+}
 .logo {
   color: var(--color-text-light);
   text-decoration: none;
@@ -112,7 +127,10 @@ body {
   font-weight: 700;
   padding: 12px 16px;
   border-radius: 12px;
-  transition: transform 0.08s ease, opacity 0.2s ease, background-color 0.2 ease,
+  transition:
+    transform 0.08s ease,
+    opacity 0.2s ease,
+    background-color 0.2 ease,
     color 0.2s ease;
 }
 .btn:active {
