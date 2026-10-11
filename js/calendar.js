@@ -205,7 +205,7 @@ const renderTimeSlots = () => {
     timeSlots.appendChild(slotBtn);
   }
 };
-// ------ Moth Navigation (previous / next month buttons) -------
+// ------ Month Navigation (previous / next month buttons) -------
 if (prevMonthBtn) {
   prevMonthBtn.addEventListener("click", () => {
     currentMonth--;
@@ -270,3 +270,73 @@ if (bookingForm) {
 // ----App Start (first draw when the page loads) -------
 renderCalendar();
 renderTimeSlots();
+/* =====================================================================
+   FUNCTION REFERENCE: what each function does and how
+   =====================================================================
+
+   getMonthName(monthIndex)
+   - Turns a month number (0 = January ... 11 = December) into its name.
+   - How: keeps an array of the 12 names and returns the one at that index.
+
+   formatDateKey(year, month, day)
+   - Builds a string like "2026-03-28" used as the lookup key in bookedAppointments.
+   - How: month + 1 (JS months start at 0), then padStart(2, "0") so single digits
+     become "03" / "07", and joins the parts with a template literal.
+
+   formatReadableDate(year, month, day)
+   - Builds a friendly string like "Saturday, March 28, 2026" for display.
+   - How: creates a Date and uses toLocaleDateString("en-US", {...}) with the
+     weekday/month/day/year options.
+
+   isPastDate(year, month, day)
+   - True if the day is before today, so it can't be booked.
+   - How: sets both the given date and today to midnight (setHours(0,0,0,0)) so
+     the time of day doesn't interfere, then compares them with <.
+
+   isClosedDay(year, month, day)
+   - True if the shop is closed that day (currently Sundays only).
+   - How: Date.getDay() returns 0-6 (0 = Sunday); returns true when it's 0.
+
+   getSlotsForDate(year, month, day)
+   - Returns the list of time slots available for that weekday.
+   - How: getDay() === 6 gives saturdaySlots, 0 gives an empty array (closed),
+     anything else gives weekdaySlots.
+
+   renderCalendar()
+   - Draws the current month as a grid of buttons.
+   - How: exits early if the grid or label element is missing; sets the
+     "Month Year" label and clears the grid; finds which weekday the 1st falls on
+     (new Date(y, m, 1).getDay()) and adds that many empty <div> spacers; finds
+     the number of days (new Date(y, m + 1, 0).getDate(), day 0 of next month =
+     last day of this one); then loops 1..daysInMonth creating a button per day.
+     Each button gets CSS classes: "today", "disabled" (past or closed), and
+     "selected" (matches selectedDate). Clicking an enabled day stores
+     selectedDate, clears the chosen time, updates the date text, and re-renders
+     the calendar and time slots.
+
+   renderTimeSlots()
+   - Draws the time buttons for the selected date.
+   - How: clears the container; shows "Choose a date first." if nothing is
+     selected; gets that day's slots and the booked list for the date; shows
+     "No appointments available" if there are no slots; otherwise loops through
+     the slots creating buttons. Booked slots are disabled and labeled
+     "- Booked", the chosen slot gets "selected", and clicking a slot saves it to
+     selectedTime and the hidden input, then re-renders to show the highlight.
+
+   Previous / Next month button handlers
+   - Move the displayed month back or forward.
+   - How: decrement/increment currentMonth; wrap at the year boundary
+     (below 0 -> December of the previous year, above 11 -> January of the next
+     year); then call renderCalendar(). The if-checks skip this if a button
+     doesn't exist on the page.
+
+   Booking form submit handler
+   - Validates and saves a booking when the form is submitted.
+   - How: event.preventDefault() stops the page reload; reads the trimmed name,
+     service, and selected time; shows a red error message if any field or the
+     date is missing; makes sure the date has an array in bookedAppointments;
+     re-checks that the time wasn't taken and shows an error if it was;
+     otherwise pushes the time into bookedAppointments, shows a green success
+     message, resets the form and selected time, and re-renders the time slots
+     so the new booking shows as "Booked".
+   ===================================================================== */
